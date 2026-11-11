@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ meeting.title }} - AI Meeting Assistant
+    </title>
+
+
+    <style>
+
+        /* ==================================================
+           GLOBAL
+        ================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            padding: 0;
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fafc 0%,
+                    #eef2ff 100%
+                );
+
+            color: #111827;
+
+            min-height: 100vh;
+
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        button {
+            font-family: inherit;
+        }
+
+
+        /* ==================================================
+           PAGE
+        ================================================== */
+
+        .page {
+
+            width: 92%;
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 30px 0 60px;
+
+        }
+
+
+        /* ==================================================
+           TOP NAVIGATION
+        ================================================== */
+
+        .topbar {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: #111827;
+
+        }
+
+
+        .brand-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-size: 20px;
+
+            box-shadow:
+                0 6px 18px
+                rgba(79, 70, 229, 0.25);
+
+        }
+
+
+        .brand-text {
+
+            font-weight: 700;
+
+            font-size: 17px;
+
+        }
+
+
+        .back-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 10px 16px;
+
+            border-radius: 9px;
+
+            background: white;
+
+            color: #4b5563;
+
+            border: 1px solid #e5e7eb;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+
+        }
+
+
+        .back-button:hover {
+
+            background: #f9fafb;
+
+            color: #111827;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        /* ==================================================
+           MEETING HEADER
+        ================================================== */
+
+        .meeting-header {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 18px;
+
+            padding: 28px 30px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(15, 23, 42, 0.06);
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .meeting-label {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: #4f46e5;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.08em;
+
+            margin-bottom: 9px;
+
+        }
+
+
+        .meeting-title {
+
+            margin: 0;
+
+            font-size: 32px;
+
+            line-height: 1.2;
+
+            color: #111827;
+
+        }
+
+
+        .meeting-meta {
+
+            margin-top: 10px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==================================================
+           RECORDING PANEL
+        ================================================== */
+
+        .recording-panel {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #111827,
+                    #1e1b4b
+                );
+
+            border-radius: 20px;
+
+            padding: 35px;
+
+            color: white;
+
+            text-align: center;
+
+            box-shadow:
+                0 18px 45px
+                rgba(15, 23, 42, 0.18);
+
+            margin-bottom: 24px;
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        .recording-panel::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 250px;
+
+            height: 250px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(99, 102, 241, 0.16);
+
+            top: -120px;
+
+            right: -80px;
+
+        }
+
+
+        .recording-panel::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+
+            height: 180px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(139, 92, 246, 0.12);
+
+            bottom: -100px;
+
+            left: -60px;
+
+        }
+
+
+        .recording-content {
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+
+        .recording-heading {
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .recording-description {
+
+            color: #c7d2fe;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        /* ==================================================
+           RECORD BUTTON
+        ================================================== */
+
+        .record-button-area {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .record-button {
+
+            width: 76px;
+
+            height: 76px;
+
+            border-radius: 50%;
+
+            border: 6px solid
+                rgba(255, 255, 255, 0.15);
+
+            background: #4f46e5;
+
+            color: white;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 29px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(79, 70, 229, 0.45);
+
+            transition:
+                transform 0.2s,
+                background 0.2s,
+                box-shadow 0.2s;
+
+        }
+
+
+        .record-button:hover:not(:disabled) {
+
+            transform: scale(1.06);
+
+            background: #6366f1;
+
+            box-shadow:
+                0 12px 32px
+                rgba(79, 70, 229, 0.55);
+
+        }
+
+
+        .record-button:active:not(:disabled) {
+
+            transform: scale(0.97);
+
+        }
+
+
+        .record-button:disabled {
+
+            opacity: 0.45;
+
+            cursor: not-allowed;
+
+            box-shadow: none;
+
+        }
+
+
+        .stop-button {
+
+            background: #ef4444;
+
+            box-shadow:
+                0 8px 25px
+                rgba(239, 68, 68, 0.35);
+
+        }
+
+
+        .stop-button:hover:not(:disabled) {
+
+            background: #f87171;
+
+            box-shadow:
+                0 12px 32px
+                rgba(239, 68, 68, 0.45);
+
+        }
+
+
+        /* ==================================================
+           RECORDING STATUS
+        ================================================== */
+
+        .status-container {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding: 9px 15px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(255, 255, 255, 0.09);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.12);
+
+        }
+
+
+        .status-dot {
+
+            width: 9px;
+
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+        }
+
+
+        .status-dot.recording {
+
+            background: #ef4444;
+
+            animation:
+                pulse 1.2s infinite;
+
+        }
+
+
+        @keyframes pulse {
+
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.75);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+
+        #recording-status {
+
+            margin: 0;
+
+            font-size: 14px;
+
+            color: #e5e7eb;
+
+        }
+
+
+        /* ==================================================
+           DOWNLOAD
+        ================================================== */
+
+        #download-recording {
+
+            display: none;
+
+            margin-top: 18px;
+
+            padding: 10px 16px;
+
+            background:
+                rgba(255, 255, 255, 0.1);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.15);
+
+            color: white;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        #download-recording:hover {
+
+            background:
+                rgba(255, 255, 255, 0.17);
+
+        }
+
+
+        /* ==================================================
+           SECTION
+        ================================================== */
+
+        .section {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15, 23, 42, 0.05);
+
+        }
+
+
+        .section-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 17px;
+
+        }
+
+
+        .section-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #eef2ff;
+
+            font-size: 18px;
+
+        }
+
+
+        .section-title {
+
+            margin: 0;
+
+            font-size: 18px;
+
+            color: #111827;
+
+        }
+
+
+        .section-subtitle {
+
+            margin: 3px 0 0;
+
+            font-size: 12px;
+
+            color: #9ca3af;
+
+        }
+
+
+        /* ==================================================
+           RESULT
+        ================================================== */
+
+        .result {
+
+            min-height: 55px;
+
+            padding: 17px;
+
+            border-radius: 11px;
+
+            background: #f9fafb;
+
+            border: 1px solid #eef0f3;
+
+            line-height: 1.75;
+
+            white-space: pre-wrap;
+
+            color: #374151;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ==================================================
+           TRANSCRIPT
+        ================================================== */
+
+        .transcript-section {
+
+            margin-bottom: 20px;
+
+        }
+
+
+        #transcript {
+
+            min-height: 150px;
+
+            max-height: 420px;
+
+            overflow-y: auto;
+
+        }
+
+
+        /* ==================================================
+           AI GRID
+        ================================================== */
+
+        .ai-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+
+        }
+
+
+        .ai-card {
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 16px;
+
+            padding: 23px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15, 23, 42, 0.05);
+
+        }
+
+
+        .ai-card .section-header {
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .ai-card .result {
+
+            min-height: 90px;
+
+        }
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        .footer {
+
+            text-align: center;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+
+            padding-top: 15px;
+
+        }
+
+
+        /* ==================================================
+           SCROLLBAR
+        ================================================== */
+
+        #transcript::-webkit-scrollbar {
+
+            width: 7px;
+
+        }
+
+
+        #transcript::-webkit-scrollbar-track {
+
+            background: #f3f4f6;
+
+            border-radius: 10px;
+
+        }
+
+
+        #transcript::-webkit-scrollbar-thumb {
+
+            background: #c7cbd1;
+
+            border-radius: 10px;
+
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 800px) {
+
+            .page {
+
+                width: 94%;
+
+                padding-top: 20px;
+
+            }
+
+
+            .topbar {
+
+                margin-bottom: 20px;
+
+            }
+
+
+            .meeting-header {
+
+                padding: 22px;
+
+            }
+
+
+            .meeting-title {
+
+                font-size: 25px;
+
+            }
+
+
+            .recording-panel {
+
+                padding: 28px 20px;
+
+            }
+
+
+            .ai-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .brand-text {
+
+                display: none;
+
+            }
+
+
+            .back-button {
+
+                padding: 9px 12px;
+
+            }
+
+
+            .section {
+
+                padding: 18px;
+
+            }
+
+
+            .record-button {
+
+                width: 68px;
+
+                height: 68px;
+
+                font-size: 25px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <!-- ==================================================
+         TOP BAR
+    ================================================== -->
+
+    <div class="topbar">
+
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🎙️
+            </div>
+
+            <div class="brand-text">
+                AI Meeting Assistant
+            </div>
+
+        </div>
+
+
+        <a
+            href="{% url 'meeting_list' %}"
+            class="back-button"
+        >
+            ← Meetings
+        </a>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         MEETING HEADER
+    ================================================== -->
+
+    <div class="meeting-header">
+
+        <div class="meeting-label">
+            ● LIVE MEETING
+        </div>
+
+
+        <h1 class="meeting-title">
+            {{ meeting.title }}
+        </h1>
+
+
+        <div class="meeting-meta">
+
+            Meeting #{{ meeting.id }}
+
+            &nbsp;•&nbsp;
+
+            {{ meeting.created_at|date:"F j, Y, g:i A" }}
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         RECORDING PANEL
+    ================================================== -->
+
+    <div class="recording-panel">
+
+
+        <div class="recording-content">
+
+
+            <div class="recording-heading">
+                Meeting Recorder
+            </div>
+
+
+            <div class="recording-description">
+
+                Record your meeting and let AI
+                transcribe and analyze it.
+
+            </div>
+
+
+            <div class="record-button-area">
+
+
+                <button
+                    id="start-recording"
+                    class="record-button"
+                    title="Start recording"
+                >
+                    🎙️
+                </button>
+
+
+                <button
+                    id="stop-recording"
+                    class="record-button stop-button"
+                    disabled
+                    title="Stop recording"
+                >
+                    ■
+                </button>
+
+
+            </div>
+
+
+            <div class="status-container">
+
+                <span
+                    id="status-dot"
+                    class="status-dot"
+                ></span>
+
+
+                <p id="recording-status">
+                    Ready to record
+                </p>
+
+            </div>
+
+
+            <br>
+
+
+            <a
+                id="download-recording"
+            >
+                Download Recording
+            </a>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         LIVE TRANSCRIPT
+    ================================================== -->
+
+    <div class="section transcript-section">
+
+
+        <div class="section-header">
+
+
+            <div class="section-icon">
+                📝
+            </div>
+
+
+            <div>
+
+                <h2 class="section-title">
+                    Live Transcript
+                </h2>
+
+                <p class="section-subtitle">
+                    Speech captured from your meeting
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            id="transcript"
+            class="result"
+        >
+            Your transcript will appear here...
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         AI INSIGHTS
+    ================================================== -->
+
+    <div class="ai-grid">
+
+
+        <!-- SUMMARY -->
+
+        <div class="ai-card">
+
+
+            <div class="section-header">
+
+
+                <div class="section-icon">
+                    ✨
+                </div>
+
+
+                <div>
+
+                    <h2 class="section-title">
+                        Meeting Summary
+                    </h2>
+
+                    <p class="section-subtitle">
+                        AI-generated overview
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div
+                id="summary"
+                class="result"
+            >
+                Your AI summary will appear here...
+
+            </div>
+
+
+        </div>
+
+
+        <!-- DECISIONS -->
+
+        <div class="ai-card">
+
+
+            <div class="section-header">
+
+
+                <div class="section-icon">
+                    ✅
+                </div>
+
+
+                <div>
+
+                    <h2 class="section-title">
+                        Key Decisions
+                    </h2>
+
+                    <p class="section-subtitle">
+                        Important decisions identified
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div
+                id="decisions"
+                class="result"
+            >
+                No decisions identified yet.
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ACTION ITEMS -->
+
+        <div class="ai-card">
+
+
+            <div class="section-header">
+
+
+                <div class="section-icon">
+                    📌
+                </div>
+
+
+                <div>
+
+                    <h2 class="section-title">
+                        Action Items
+                    </h2>
+
+                    <p class="section-subtitle">
+                        Tasks identified from the meeting
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div
+                id="action-items"
+                class="result"
+            >
+                No action items identified yet.
+
+            </div>
+
+
+        </div>
+
+
+        <!-- DEADLINES -->
+
+        <div class="ai-card">
+
+
+            <div class="section-header">
+
+
+                <div class="section-icon">
+                    📅
+                </div>
+
+
+                <div>
+
+                    <h2 class="section-title">
+                        Deadlines
+                    </h2>
+
+                    <p class="section-subtitle">
+                        Dates and deadlines mentioned
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div
+                id="deadlines"
+                class="result"
+            >
+                No deadlines identified yet.
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         FOOTER
+    ================================================== -->
+
+    <div class="footer">
+
+        AI Meeting Assistant
+        &nbsp;•&nbsp;
+        Powered by local Whisper transcription
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // =====================================================
+    // VARIABLES
+    // =====================================================
+
+    let mediaRecorder = null;
+
+    let audioChunks = [];
+
+    let socket = null;
+
+    let mediaStream = null;
+
+
+    // =====================================================
+    // HTML ELEMENTS
+    // =====================================================
+
+    const startButton =
+        document.getElementById(
+            "start-recording"
+        );
+
+
+    const stopButton =
+        document.getElementById(
+            "stop-recording"
+        );
+
+
+    const status =
+        document.getElementById(
+            "recording-status"
+        );
+
+
+    const statusDot =
+        document.getElementById(
+            "status-dot"
+        );
+
+
+    const downloadLink =
+        document.getElementById(
+            "download-recording"
+        );
+
+
+    const transcriptElement =
+        document.getElementById(
+            "transcript"
+        );
+
+
+    const summaryElement =
+        document.getElementById(
+            "summary"
+        );
+
+
+    const decisionsElement =
+        document.getElementById(
+            "decisions"
+        );
+
+
+    const actionItemsElement =
+        document.getElementById(
+            "action-items"
+        );
+
+
+    const deadlinesElement =
+        document.getElementById(
+            "deadlines"
+        );
+
+
+    // =====================================================
+    // WEBSOCKET PROTOCOL
+    // =====================================================
+
+    const protocol =
+        window.location.protocol === "https:"
+            ? "wss"
+            : "ws";
+
+
+    // =====================================================
+    // CONNECT WEBSOCKET
+    // =====================================================
+
+    socket = new WebSocket(
+        `${protocol}://${window.location.host}/ws/meeting/{{ meeting.id }}/`
+    );
+
+
+    // =====================================================
+    // STATUS HELPER
+    // =====================================================
+
+    function setStatus(
+        message,
+        recording = false
+    ) {
+
+        status.textContent = message;
+
+        if (recording) {
+
+            statusDot.classList.add(
+                "recording"
+            );
+
+        }
+
+        else {
+
+            statusDot.classList.remove(
+                "recording"
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // SOCKET OPEN
+    // =====================================================
+
+    socket.onopen = () => {
+
+        console.log(
+            "WebSocket connected."
+        );
+
+        setStatus(
+            "Ready to record"
+        );
+
+    };
+
+
+    // =====================================================
+    // SOCKET MESSAGE
+    // =====================================================
+
+    socket.onmessage = (event) => {
+
+        console.log(
+            "Server:",
+            event.data
+        );
+
+
+        // -------------------------------------------------
+        // STATUS MESSAGES
+        // -------------------------------------------------
+
+        if (
+            event.data.startsWith(
+                "STATUS:"
+            )
+        ) {
+
+            const message =
+                event.data.substring(
+                    "STATUS:".length
+                );
+
+            setStatus(
+                message
+            );
+
+
+            if (
+                message
+                    .toLowerCase()
+                    .includes("recording")
+            ) {
+
+                statusDot.classList.add(
+                    "recording"
+                );
+
+            }
+
+            return;
+
+        }
+
+
+        // -------------------------------------------------
+        // TRANSCRIPT
+        // -------------------------------------------------
+
+        if (
+            event.data.startsWith(
+                "TRANSCRIPT:"
+            )
+        ) {
+
+            const transcript =
+                event.data.substring(
+                    "TRANSCRIPT:".length
+                ).trim();
+
+
+            transcriptElement.textContent =
+                transcript;
+
+
+            setStatus(
+                "Transcript complete. Analyzing meeting..."
+            );
+
+
+            console.log(
+                "Transcript:",
+                transcript
+            );
+
+            return;
+
+        }
+
+
+        // -------------------------------------------------
+        // ANALYSIS
+        // -------------------------------------------------
+
+        if (
+            event.data.startsWith(
+                "ANALYSIS:"
+            )
+        ) {
+
+            try {
+
+                const jsonText =
+                    event.data.substring(
+                        "ANALYSIS:".length
+                    );
+
+
+                const analysis =
+                    JSON.parse(
+                        jsonText
+                    );
+
+
+                // -----------------------------------------
+                // SUMMARY
+                // -----------------------------------------
+
+                summaryElement.textContent =
+                    analysis.summary ||
+                    "No summary available.";
+
+
+                // -----------------------------------------
+                // DECISIONS
+                // -----------------------------------------
+
+                decisionsElement.textContent =
+                    analysis.decisions ||
+                    "None identified.";
+
+
+                // -----------------------------------------
+                // ACTION ITEMS
+                // -----------------------------------------
+
+                actionItemsElement.textContent =
+                    analysis.action_items ||
+                    "None identified.";
+
+
+                // -----------------------------------------
+                // DEADLINES
+                // -----------------------------------------
+
+                deadlinesElement.textContent =
+                    analysis.deadlines ||
+                    "None identified.";
+
+
+                setStatus(
+                    "Meeting analysis complete."
+                );
+
+
+                console.log(
+                    "Groq analysis:",
+                    analysis
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Could not parse analysis:",
+                    error
+                );
+
+                setStatus(
+                    "Could not display meeting analysis."
+                );
+
+            }
+
+            return;
+
+        }
+
+
+        // -------------------------------------------------
+        // ERROR
+        // -------------------------------------------------
+
+        if (
+            event.data.startsWith(
+                "ERROR:"
+            )
+        ) {
+
+            const errorMessage =
+                event.data.substring(
+                    "ERROR:".length
+                );
+
+
+            setStatus(
+                errorMessage
+            );
+
+
+            statusDot.classList.remove(
+                "recording"
+            );
+
+        }
+
+    };
+
+
+    // =====================================================
+    // SOCKET CLOSE
+    // =====================================================
+
+    socket.onclose = () => {
+
+        console.log(
+            "WebSocket disconnected."
+        );
+
+        statusDot.classList.remove(
+            "recording"
+        );
+
+    };
+
+
+    // =====================================================
+    // SOCKET ERROR
+    // =====================================================
+
+    socket.onerror = (error) => {
+
+        console.error(
+            "WebSocket error:",
+            error
+        );
+
+
+        setStatus(
+            "WebSocket connection error."
+        );
+
+    };
+
+
+    // =====================================================
+    // START RECORDING
+    // =====================================================
+
+    startButton.addEventListener(
+        "click",
+        async () => {
+
+            try {
+
+                // -----------------------------------------
+                // CHECK WEBSOCKET
+                // -----------------------------------------
+
+                if (
+                    !socket ||
+                    socket.readyState !==
+                    WebSocket.OPEN
+                ) {
+
+                    setStatus(
+                        "WebSocket is not connected."
+                    );
+
+                    return;
+
+                }
+
+
+                // -----------------------------------------
+                // MICROPHONE
+                // -----------------------------------------
+
+                mediaStream =
+                    await navigator
+                        .mediaDevices
+                        .getUserMedia({
+                            audio: true
+                        });
+
+
+                // -----------------------------------------
+                // MEDIA RECORDER
+                // -----------------------------------------
+
+                mediaRecorder =
+                    new MediaRecorder(
+                        mediaStream
+                    );
+
+
+                audioChunks = [];
+
+
+                // -----------------------------------------
+                // COLLECT AUDIO
+                // -----------------------------------------
+
+                mediaRecorder.ondataavailable =
+                    (event) => {
+
+                        if (
+                            event.data &&
+                            event.data.size > 0
+                        ) {
+
+                            audioChunks.push(
+                                event.data
+                            );
+
+
+                            console.log(
+                                "Audio chunk captured:",
+                                event.data.size,
+                                "bytes"
+                            );
+
+                        }
+
+                    };
+
+
+                // -----------------------------------------
+                // RECORDING STARTED
+                // -----------------------------------------
+
+                mediaRecorder.onstart =
+                    () => {
+
+                        setStatus(
+                            "Recording...",
+                            true
+                        );
+
+
+                        startButton.disabled =
+                            true;
+
+
+                        stopButton.disabled =
+                            false;
+
+
+                        downloadLink.style.display =
+                            "none";
+
+
+                        transcriptElement.textContent =
+                            "Listening...";
+
+
+                        summaryElement.textContent =
+                            "Waiting for transcript...";
+
+
+                        decisionsElement.textContent =
+                            "Waiting for transcript...";
+
+
+                        actionItemsElement.textContent =
+                            "Waiting for transcript...";
+
+
+                        deadlinesElement.textContent =
+                            "Waiting for transcript...";
+
+
+                        console.log(
+                            "Recording started."
+                        );
+
+                    };
+
+
+                // -----------------------------------------
+                // RECORDING STOPPED
+                // -----------------------------------------
+
+                mediaRecorder.onstop =
+                    () => {
+
+                        console.log(
+                            "MediaRecorder stopped."
+                        );
+
+
+                        setStatus(
+                            "Preparing complete recording..."
+                        );
+
+
+                        startButton.disabled =
+                            false;
+
+
+                        stopButton.disabled =
+                            true;
+
+
+                        // ---------------------------------
+                        // STOP MICROPHONE
+                        // ---------------------------------
+
+                        if (
+                            mediaStream
+                        ) {
+
+                            mediaStream
+                                .getTracks()
+                                .forEach(
+                                    track =>
+                                        track.stop()
+                                );
+
+                        }
+
+
+                        console.log(
+                            "Audio chunks captured:",
+                            audioChunks.length
+                        );
+
+
+                        if (
+                            audioChunks.length === 0
+                        ) {
+
+                            setStatus(
+                                "No audio was recorded."
+                            );
+
+                            return;
+
+                        }
+
+
+                        // ---------------------------------
+                        // CREATE COMPLETE WEBM
+                        // ---------------------------------
+
+                        const audioBlob =
+                            new Blob(
+                                audioChunks,
+                                {
+                                    type:
+                                        mediaRecorder.mimeType
+                                }
+                            );
+
+
+                        console.log(
+                            "Complete recording created."
+                        );
+
+
+                        console.log(
+                            "Recording size:",
+                            audioBlob.size,
+                            "bytes"
+                        );
+
+
+                        // ---------------------------------
+                        // DOWNLOAD RECORDING
+                        // ---------------------------------
+
+                        const audioUrl =
+                            URL.createObjectURL(
+                                audioBlob
+                            );
+
+
+                        downloadLink.href =
+                            audioUrl;
+
+
+                        downloadLink.download =
+                            "meeting-recording.webm";
+
+
+                        downloadLink.textContent =
+                            "↓ Download Recording";
+
+
+                        downloadLink.style.display =
+                            "inline-block";
+
+
+                        // ---------------------------------
+                        // SEND COMPLETE FILE
+                        // ---------------------------------
+
+                        if (
+                            socket &&
+                            socket.readyState ===
+                            WebSocket.OPEN
+                        ) {
+
+                            setStatus(
+                                "Uploading recording..."
+                            );
+
+
+                            socket.send(
+                                audioBlob
+                            );
+
+
+                            console.log(
+                                "Complete WebM recording sent to Django."
+                            );
+
+
+                            // WebSocket preserves
+                            // message ordering.
+
+                            socket.send(
+                                "stop_recording"
+                            );
+
+
+                            console.log(
+                                "Transcription command sent."
+                            );
+
+                        }
+
+                        else {
+
+                            setStatus(
+                                "Could not send recording to Django."
+                            );
+
+                        }
+
+
+                        audioChunks = [];
+
+                    };
+
+
+                // -----------------------------------------
+                // START
+                // -----------------------------------------
+
+                mediaRecorder.start(
+                    1000
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Microphone error:",
+                    error
+                );
+
+
+                setStatus(
+                    "Microphone access was denied or unavailable."
+                );
+
+
+                startButton.disabled =
+                    false;
+
+
+                stopButton.disabled =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    // =====================================================
+    // STOP RECORDING
+    // =====================================================
+
+    stopButton.addEventListener(
+        "click",
+        () => {
+
+            if (
+                mediaRecorder &&
+                mediaRecorder.state !==
+                "inactive"
+            ) {
+
+                console.log(
+                    "Stop button clicked."
+                );
+
+
+                setStatus(
+                    "Stopping recording..."
+                );
+
+
+                mediaRecorder.stop();
+
+            }
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

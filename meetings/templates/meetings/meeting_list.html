@@ -1,0 +1,700 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en"> <head>     <meta charset="UTF-8">     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Meetings | AI Meeting Assistant</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7fb;
+        color: #172033;
+        min-height: 100vh;
+    }
+
+    /* =========================
+       TOP NAVIGATION
+    ========================== */
+
+    .topbar {
+        height: 72px;
+        background: #ffffff;
+        border-bottom: 1px solid #e5e9f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 42px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+    .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 21px;
+        font-weight: bold;
+        box-shadow: 0 7px 18px rgba(37, 99, 235, 0.22);
+    }
+
+    .brand-text h1 {
+        font-size: 18px;
+        color: #172033;
+        margin-bottom: 2px;
+    }
+
+    .brand-text span {
+        font-size: 12px;
+        color: #7a8497;
+    }
+
+    .new-meeting-btn {
+        text-decoration: none;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s ease;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+    }
+
+    .new-meeting-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 11px 25px rgba(37, 99, 235, 0.25);
+    }
+
+    /* =========================
+       MAIN CONTENT
+    ========================== */
+
+    .container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 42px 25px 60px;
+    }
+
+    .welcome-section {
+        margin-bottom: 30px;
+    }
+
+    .welcome-section h2 {
+        font-size: 30px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .welcome-section p {
+        color: #6b7280;
+        font-size: 15px;
+    }
+
+    /* =========================
+       STAT CARDS
+    ========================== */
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 38px;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        border: 1px solid #e7ebf1;
+        border-radius: 15px;
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 5px 18px rgba(17, 24, 39, 0.04);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        background: #eef4ff;
+    }
+
+    .stat-info small {
+        display: block;
+        color: #7b8495;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .stat-info strong {
+        display: block;
+        color: #172033;
+        font-size: 23px;
+    }
+
+    /* =========================
+       SECTION HEADER
+    ========================== */
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 17px;
+    }
+
+    .section-header h3 {
+        font-size: 20px;
+        color: #172033;
+    }
+
+    .meeting-count {
+        font-size: 13px;
+        color: #7a8497;
+        background: #ffffff;
+        border: 1px solid #e5e9f0;
+        padding: 7px 12px;
+        border-radius: 20px;
+    }
+
+    /* =========================
+       MEETING CARDS
+    ========================== */
+
+    .meetings-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .meeting-card {
+        background: #ffffff;
+        border: 1px solid #e5e9f0;
+        border-radius: 16px;
+        padding: 21px;
+        box-shadow: 0 5px 18px rgba(17, 24, 39, 0.035);
+        transition: 0.2s ease;
+    }
+
+    .meeting-card:hover {
+        transform: translateY(-3px);
+        border-color: #d5def0;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+    }
+
+    .meeting-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .meeting-title-area {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .meeting-icon {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border-radius: 11px;
+        background: #eef4ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+
+    .meeting-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #172033;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .meeting-id {
+        font-size: 11px;
+        color: #9aa3b2;
+        margin-top: 3px;
+    }
+
+    .status {
+        font-size: 10px;
+        font-weight: 700;
+        color: #15803d;
+        background: #ecfdf3;
+        padding: 5px 8px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .meeting-details {
+        border-top: 1px solid #edf0f4;
+        padding-top: 15px;
+        margin-bottom: 17px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .detail-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .detail-label {
+        color: #8a93a3;
+        font-size: 12px;
+    }
+
+    .detail-value {
+        color: #4b5563;
+        font-size: 12px;
+        text-align: right;
+    }
+
+    /* =========================
+       ACTION BUTTONS
+    ========================== */
+
+    .meeting-actions {
+        display: flex;
+        gap: 9px;
+    }
+
+    .action-btn {
+        flex: 1;
+        text-decoration: none;
+        text-align: center;
+        padding: 10px 12px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .open-btn {
+        background: #eef4ff;
+        color: #2563eb;
+    }
+
+    .open-btn:hover {
+        background: #e1ebff;
+    }
+
+    .report-btn {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .report-btn:hover {
+        background: #e7e9ed;
+    }
+
+    /* =========================
+       EMPTY STATE
+    ========================== */
+
+    .empty-state {
+        background: #ffffff;
+        border: 1px dashed #cfd6e2;
+        border-radius: 17px;
+        padding: 55px 25px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px;
+        border-radius: 17px;
+        background: #eef4ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+    }
+
+    .empty-state h3 {
+        font-size: 18px;
+        margin-bottom: 7px;
+        color: #172033;
+    }
+
+    .empty-state p {
+        color: #7a8497;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================== */
+
+    .footer {
+        text-align: center;
+        padding-top: 45px;
+        color: #9aa3b2;
+        font-size: 11px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================== */
+
+    @media (max-width: 800px) {
+
+        .topbar {
+            padding: 0 20px;
+        }
+
+        .container {
+            padding: 30px 18px 50px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        .meetings-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-section h2 {
+            font-size: 25px;
+        }
+    }
+
+    @media (max-width: 520px) {
+
+        .brand-text span {
+            display: none;
+        }
+
+        .brand-text h1 {
+            font-size: 15px;
+        }
+
+        .new-meeting-btn {
+            padding: 10px 13px;
+            font-size: 12px;
+        }
+
+        .new-meeting-btn span {
+            display: none;
+        }
+
+        .section-header {
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .meeting-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- TOP NAVIGATION -->
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            AI
+        </div>
+
+        <div class="brand-text">
+            <h1>AI Meeting Assistant</h1>
+            <span>Meetings • Transcription • AI Insights</span>
+        </div>
+
+    </div>
+
+    <form method="POST" action="{% url 'create_meeting' %}" style="margin: 0;">
+        {% csrf_token %}
+
+        <button type="submit" class="new-meeting-btn" style="border: none; cursor: pointer;">
+            <strong>+</strong>
+            <span>Start New Meeting</span>
+        </button>
+    </form>
+
+</header>
+
+
+
+<!-- MAIN CONTENT -->
+<main class="container">
+
+    <!-- WELCOME -->
+    <section class="welcome-section">
+
+        <h2>Meeting Dashboard</h2>
+
+        <p>
+            Manage your meetings, transcripts and AI-generated insights
+            from one place.
+        </p>
+
+    </section>
+
+
+    <!-- STATISTICS -->
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🎙️
+            </div>
+
+            <div class="stat-info">
+                <small>Total Meetings</small>
+                <strong>{{ meetings|length }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📝
+            </div>
+
+            <div class="stat-info">
+                <small>Transcripts</small>
+                <strong>
+                    {{ meetings|length }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ✨
+            </div>
+
+            <div class="stat-info">
+                <small>AI Insights</small>
+                <strong>
+                    {{ meetings|length }}
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MEETINGS -->
+    <section>
+
+        <div class="section-header">
+
+            <h3>Recent Meetings</h3>
+
+            <div class="meeting-count">
+                {{ meetings|length }} meeting{{ meetings|length|pluralize }}
+            </div>
+
+        </div>
+
+
+        {% if meetings %}
+
+            <div class="meetings-grid">
+
+                {% for meeting in meetings %}
+
+                    <article class="meeting-card">
+
+                        <div class="meeting-top">
+
+                            <div class="meeting-title-area">
+
+                                <div class="meeting-icon">
+                                    🎙
+                                </div>
+
+                                <div>
+
+                                    <div class="meeting-title">
+                                        {{ meeting.title }}
+                                    </div>
+
+                                    <div class="meeting-id">
+                                        Meeting #{{ meeting.id }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="status">
+                                COMPLETED
+                            </div>
+
+                        </div>
+
+
+                        <div class="meeting-details">
+
+                            <div class="detail-row">
+
+                                <span class="detail-label">
+                                    Created
+                                </span>
+
+                                <span class="detail-value">
+                                    {{ meeting.created_at|date:"M d, Y • g:i A" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="detail-row">
+
+                                <span class="detail-label">
+                                    Last Updated
+                                </span>
+
+                                <span class="detail-value">
+                                    {{ meeting.updated_at|date:"M d, Y • g:i A" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="detail-row">
+
+                                <span class="detail-label">
+                                    Transcript
+                                </span>
+
+                                <span class="detail-value">
+
+                                    {% if meeting.transcript %}
+                                        Available
+                                    {% else %}
+                                        Not available
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="meeting-actions">
+
+                            <a
+                                href="{% url 'meeting_room' meeting.id %}"
+                                class="action-btn open-btn"
+                            >
+                                Open Meeting
+                            </a>
+
+
+                            <a
+                                href="{% url 'meeting_report' meeting.id %}"
+                                class="action-btn report-btn"
+                            >
+                                View Report
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🎙️
+                </div>
+
+                <h3>No meetings yet</h3>
+
+                <p>
+                    Start your first meeting and let the AI Meeting
+                    Assistant transcribe and analyze it for you.
+                </p>
+
+                <a
+                    href="{% url 'create_meeting' %}"
+                    class="new-meeting-btn"
+                >
+                    <strong>+</strong>
+                    Start Your First Meeting
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <div class="footer">
+        AI Meeting Assistant • Local transcription powered by Whisper
+    </div>
+
+</main>
+```
+
+</body>
+</html>

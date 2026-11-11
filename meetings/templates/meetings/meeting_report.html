@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>{{ meeting.title }} - Meeting Report</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+
+        font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+        background: #f4f6f8;
+
+        color: #1f2937;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1100px;
+
+        margin: 40px auto;
+    }
+
+    .top-bar {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 25px;
+    }
+
+    .back-button {
+        display: inline-block;
+
+        text-decoration: none;
+
+        background: #374151;
+        color: white;
+
+        padding: 10px 18px;
+
+        border-radius: 8px;
+
+        font-size: 14px;
+
+        transition: 0.2s;
+    }
+
+    .back-button:hover {
+        background: #1f2937;
+    }
+
+    .report-card {
+        background: white;
+
+        border-radius: 14px;
+
+        padding: 30px;
+
+        margin-bottom: 22px;
+
+        box-shadow:
+            0 4px 15px
+            rgba(0, 0, 0, 0.08);
+    }
+
+    .meeting-header {
+        margin-bottom: 25px;
+    }
+
+    .meeting-title {
+        font-size: 32px;
+
+        margin: 0 0 10px 0;
+
+        color: #111827;
+    }
+
+    .meeting-date {
+        color: #6b7280;
+
+        font-size: 14px;
+
+        line-height: 1.8;
+    }
+
+    .section-title {
+        font-size: 21px;
+
+        margin-top: 0;
+        margin-bottom: 15px;
+
+        color: #111827;
+    }
+
+    .section-content {
+        white-space: pre-wrap;
+
+        line-height: 1.7;
+
+        color: #374151;
+
+        font-size: 15px;
+    }
+
+    .empty {
+        color: #9ca3af;
+
+        font-style: italic;
+    }
+
+    .grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 22px;
+
+        margin-bottom: 22px;
+    }
+
+    .info-card {
+        background: white;
+
+        border-radius: 14px;
+
+        padding: 25px;
+
+        box-shadow:
+            0 4px 15px
+            rgba(0, 0, 0, 0.08);
+    }
+
+    .transcript {
+        max-height: 500px;
+
+        overflow-y: auto;
+
+        background: #f9fafb;
+
+        border: 1px solid #e5e7eb;
+
+        padding: 20px;
+
+        border-radius: 10px;
+
+        white-space: pre-wrap;
+
+        line-height: 1.7;
+
+        color: #374151;
+
+        font-size: 15px;
+    }
+
+    .footer {
+        text-align: center;
+
+        color: #9ca3af;
+
+        font-size: 13px;
+
+        margin-top: 30px;
+
+        margin-bottom: 40px;
+    }
+
+    @media (max-width: 700px) {
+
+        .container {
+            width: 94%;
+
+            margin: 25px auto;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        .meeting-title {
+            font-size: 25px;
+        }
+
+        .report-card,
+        .info-card {
+            padding: 20px;
+        }
+
+        .top-bar {
+            margin-bottom: 20px;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<!-- TOP BAR -->
+
+<div class="top-bar">
+
+    <a
+        href="{% url 'meeting_list' %}"
+        class="back-button"
+    >
+        ← Back to Meetings
+    </a>
+
+</div>
+
+
+<!-- MEETING HEADER -->
+
+<div class="report-card meeting-header">
+
+    <h1 class="meeting-title">
+        {{ meeting.title }}
+    </h1>
+
+    <div class="meeting-date">
+
+        Created:
+        {{ meeting.created_at|date:"F j, Y, g:i A" }}
+
+        <br>
+
+        Last updated:
+        {{ meeting.updated_at|date:"F j, Y, g:i A" }}
+
+    </div>
+
+</div>
+
+
+<!-- SUMMARY -->
+
+<div class="report-card">
+
+    <h2 class="section-title">
+        📋 Meeting Summary
+    </h2>
+
+    {% if meeting.summary %}
+
+        <div class="section-content">
+            {{ meeting.summary }}
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            No summary available for this meeting.
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- DECISIONS AND ACTION ITEMS -->
+
+<div class="grid">
+
+
+    <!-- DECISIONS -->
+
+    <div class="info-card">
+
+        <h2 class="section-title">
+            ✅ Decisions
+        </h2>
+
+        {% if meeting.decisions %}
+
+            <div class="section-content">
+                {{ meeting.decisions }}
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                No decisions identified.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ACTION ITEMS -->
+
+    <div class="info-card">
+
+        <h2 class="section-title">
+            📝 Action Items
+        </h2>
+
+        {% if meeting.action_items %}
+
+            <div class="section-content">
+                {{ meeting.action_items }}
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                No action items identified.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+</div>
+
+
+<!-- DEADLINES -->
+
+<div class="report-card">
+
+    <h2 class="section-title">
+        📅 Deadlines
+    </h2>
+
+    {% if meeting.deadlines %}
+
+        <div class="section-content">
+            {{ meeting.deadlines }}
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            No deadlines identified.
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- FULL TRANSCRIPT -->
+
+<div class="report-card">
+
+    <h2 class="section-title">
+        🎙️ Full Transcript
+    </h2>
+
+    {% if meeting.transcript %}
+
+        <div class="transcript">
+            {{ meeting.transcript }}
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            No transcript available for this meeting.
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- FOOTER -->
+
+<div class="footer">
+
+    AI Meeting Assistant
+
+</div>
+```
+
+</div>
+
+</body>
+
+</html>
